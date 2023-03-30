@@ -1,27 +1,13 @@
-import { client } from './mongoConnect'
+import { client, fruitsCollection } from './mongoConnect.js'
 
-// connect to client
-client.connect()
 
 //connect to do db - or create if there is none
-const database = client.db('products')
+// const database = client.db('products')
 
 // connect to collection - or create if none 
 const collection = database.collection('fruits')
 
 
-const addFruit = async () => {
-
-  const myFruit = {
-    name: "Canteloupe",
-    taste: "Sour",
-    price: 4,
-    stock: 5,
-  }
-
-  const addedFruit = await collection.insertOne(myFruit)
-  console.log(addedFruit)
-}
 
 // addFruit()
 
@@ -34,17 +20,37 @@ const editFruit = async () => {
 
 // editFruit()
 
+// const getAllFruits = async () => {
+// // const allFruits = await collection.find().toArray()
+//   collection.find().toArray().then(items => console.log(items)).catch(err => console.log(err))
+//   console.log(allFruits)
+// }
+
 const getAllFruits = async () => {
-  // const allFruits = await collection.find().toArray()
-  collection.find().toArray().then(items => console.log(items)).catch(err => console.log(err))
-  console.log(allFruits)
+  try {
+    await client.connect()
+    const allFruits = await collection.find().toArray()
+    console.log(allFruits)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    await client.close()
+  }
 }
 
-// getAllFruits() 
+getAllFruits()
 
 const deleteFruit = async () => {
-  const itemDeleted = await collection.deleteOne({ name: 'Pineapple' })
-  console.log(itemDeleted)
+  //start try catch 
+  try {
+    await client.connect()
+    const itemDeleted = await collection.deleteOne({ name: 'Pineapple' })
+    console.log(itemDeleted)
+  } catch (error) {
+    console.error(err)
+  } finally {
+    await client.close()
+  }
 }
 
-deleteFruit()
+// deleteFruit()
